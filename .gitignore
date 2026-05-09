@@ -1,0 +1,9 @@
+Programs/
+Logs/
+*.tmp
+*.bak
+*.x64.err
+*.x64.prn
+*.x64.pkd
+*.exe.manifest
+*.tagIdeSrc/ 
