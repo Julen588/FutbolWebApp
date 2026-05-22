@@ -20,11 +20,10 @@ Object oSelectPosicion is a cWebView
     Set piMaxWidth to 1024
 
     Object oposicion_DD is a cposicionDataDictionary
-    End_Object 
+    End_Object
 
-    Set Main_DD To oposicion_DD
-    Set Server  To oposicion_DD
-
+    Set Main_DD to oposicion_DD
+    Set Server  to oposicion_DD
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -38,7 +37,7 @@ Object oSelectPosicion is a cWebView
             Entry_Item posicion.Nombre
             Set psCaption to "posicion.Nombre"
             Set piWidth to 996
-        End_Object 
+        End_Object
 
         Object oDetailButton is a cWebColumnButton
             Set psCaption to "btn"
@@ -49,9 +48,6 @@ Object oSelectPosicion is a cWebView
             Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
             Set peAlign to alignRight
 
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
-
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
@@ -60,10 +56,7 @@ Object oSelectPosicion is a cWebView
                 Move True to NavigateData.bReadOnly
             End_Procedure
 
-        End_Object 
-
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-//        WebRegisterPath ntNavigateForward oSelectView
+        End_Object
 
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
@@ -71,9 +64,7 @@ Object oSelectPosicion is a cWebView
 
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not yet defined"
-//                    Send NavigateForward of oSelectView Self
+                    Send NavigateClose Self
                     Case Break
 
                 Case (NavigateData.eNavigateType = nfFromChild)
@@ -84,10 +75,8 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not yet defined"
-//                    Send NavigateForward of oSelectView Self
+                Case Else
+                    Send NavigateClose Self
 
             Case End
         End_Procedure
@@ -96,7 +85,7 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object 
+    End_Object
 
     Object oActionGroup is a cWebMenuGroup
 
@@ -108,14 +97,11 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                 Send Search of oList
             End_Procedure
 
-        End_Object 
+        End_Object
 
         Object oNewButton is a cWebMenuItem
             Set psCSSClass to "WebClearMenuItem"
             Set psCaption to "New"
-
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
 
             Procedure OnClick
                 Send NavigatePath
@@ -125,33 +111,31 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                 Move True to NavigateData.bNewRecord
             End_Procedure
 
-        End_Object 
-    End_Object 
+        End_Object
+
+    End_Object
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        String sJugadorID
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
+            Case Else
+                Get NamedValueGet of NavigateData "JugadorID" to sJugadorID
 
         Case End
 
     End_Procedure
 
-
-End_Object 
+End_Object

@@ -8,6 +8,8 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebColumnButton.pkg
 Use cWebColumn.pkg
+Use SelectEquipo.wo
+Use SelectPosicion.wo
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
@@ -22,19 +24,18 @@ Object oZoomJugador is a cWebView
     Set piMaxWidth to 1024
 
     Object oliga_DD is a cligaDataDictionary
-    End_Object 
+    End_Object
 
     Object oequipo_DD is a cequipoDataDictionary
-        Set DDO_Server To oliga_DD
-    End_Object 
+        Set DDO_Server to oliga_DD
+    End_Object
 
     Object ojugador_DD is a cjugadorDataDictionary
-        Set DDO_Server To oequipo_DD
-    End_Object 
+        Set DDO_Server to oequipo_DD
+    End_Object
 
-    Set Main_DD To ojugador_DD
-    Set Server  To ojugador_DD
-
+    Set Main_DD to ojugador_DD
+    Set Server  to ojugador_DD
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -48,25 +49,25 @@ Object oZoomJugador is a cWebView
             Entry_Item jugador.Nombre
             Set psCaption to "jugador.Nombre"
             Set piWidth to 1195
-        End_Object 
+        End_Object
 
         Object ojugadorApellido is a cWebColumn
             Entry_Item jugador.Apellido
             Set psCaption to "jugador.Apellido"
             Set piWidth to 1195
-        End_Object 
+        End_Object
 
         Object ojugadorNacionalidad is a cWebColumn
             Entry_Item jugador.Nacionalidad
             Set psCaption to "jugador.Nacionalidad"
             Set piWidth to 996
-        End_Object 
+        End_Object
 
         Object oequipoNombre is a cWebColumn
             Entry_Item equipo.Nombre
             Set psCaption to "equipo.Nombre"
             Set piWidth to 2391
-        End_Object 
+        End_Object
 
         Object oDetailButton is a cWebColumnButton
             Set psCaption to "btn"
@@ -77,9 +78,6 @@ Object oZoomJugador is a cWebView
             Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
             Set peAlign to alignRight
 
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
-
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
@@ -88,10 +86,9 @@ Object oZoomJugador is a cWebView
                 Move True to NavigateData.bReadOnly
             End_Procedure
 
-        End_Object 
+        End_Object
 
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-//        WebRegisterPath ntNavigateForward oSelectView
+        WebRegisterPath ntNavigateForward oSelectEquipo
 
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
@@ -99,9 +96,7 @@ Object oZoomJugador is a cWebView
 
             Case Begin
                 Case (NavigateData.eNavigateType = nfFromParent)
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not yet defined"
-//                    Send NavigateForward of oSelectView Self
+                    Send NavigateForward of oSelectEquipo Self
                     Case Break
 
                 Case (NavigateData.eNavigateType = nfFromChild)
@@ -112,10 +107,8 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
-// ToDo: Fill in the from-parent child Select view object name for navigate forward
-Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not yet defined"
-//                    Send NavigateForward of oSelectView Self
+                Case Else
+                    Send NavigateForwardCustom of oSelectPosicion Self
 
             Case End
         End_Procedure
@@ -124,7 +117,7 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object 
+    End_Object
 
     Object oActionGroup is a cWebMenuGroup
 
@@ -136,14 +129,11 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                 Send Search of oList
             End_Procedure
 
-        End_Object 
+        End_Object
 
         Object oNewButton is a cWebMenuItem
             Set psCSSClass to "WebClearMenuItem"
             Set psCaption to "New"
-
-// ToDo: Fill in the from-main Zoom view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oZoomView
 
             Procedure OnClick
                 Send NavigatePath
@@ -153,8 +143,27 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
                 Move True to NavigateData.bNewRecord
             End_Procedure
 
-        End_Object 
-    End_Object 
+        End_Object
+
+        Object oVerEquipo is a cWebMenuItem
+            Set psCaption to "Ver Equipo"
+
+            Procedure OnClick
+                Send NavigateForward of oSelectEquipo Self
+            End_Procedure
+
+        End_Object
+
+        Object oVerPosiciones is a cWebMenuItem
+            Set psCaption to "Ver Posiciones"
+
+            Procedure OnClick
+                Send NavigateForwardCustom of oSelectPosicion Self
+            End_Procedure
+
+        End_Object
+
+    End_Object
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         WebSet pbRender of oNewButton to True
@@ -162,24 +171,19 @@ Error DFERR_PROGRAM "NavigateForward to this from-parent child Select view not y
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
+            Case Else
 
         Case End
 
     End_Procedure
 
-
-End_Object 
+End_Object
