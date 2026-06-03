@@ -8,6 +8,7 @@ Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebColumnButton.pkg
 Use cWebColumn.pkg
+Use cWebColumnCombo.pkg
 Use SelectEquipo.wo
 Use SelectPosicion.wo
 
@@ -57,9 +58,9 @@ Object oZoomJugador is a cWebView
             Set piWidth to 1195
         End_Object
 
-        Object ojugadorNacionalidad is a cWebColumn
+        Object ojugadorNacionalidad is a cWebColumnCombo
             Entry_Item jugador.Nacionalidad
-            Set psCaption to "jugador.Nacionalidad"
+            Set psCaption to "Nacionalidad"
             Set piWidth to 996
         End_Object
 
